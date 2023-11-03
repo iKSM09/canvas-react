@@ -4,25 +4,48 @@ import TopPanel from "./components/TopPanel";
 import BottomPanel from "./components/BottomPanel";
 
 import "./App.css";
+import { Draw, useDraw } from "./hooks/useDraw";
 
 function App() {
-  const [selectedColor, setSelectedColor] = useState("#000000");
+  const [brushColor, setBrushColor] = useState("#000000");
+  const [brushSize, setBrushSize] = useState(5);
 
   const colorInputRef = useRef<HTMLInputElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const { canvasRef, onMouseDown, clearCanvas, download } = useDraw(drawLine);
+
+  function drawLine({ prevPoint, currentPoint, ctx }: Draw) {
+    const { x: currX, y: currY } = currentPoint;
+
+    const startPoint = prevPoint ?? currentPoint;
+    ctx.beginPath();
+    ctx.lineWidth = brushSize;
+    ctx.strokeStyle = brushColor;
+    ctx.moveTo(startPoint.x, startPoint.y);
+    ctx.lineTo(currX, currY);
+    ctx.stroke();
+
+    ctx.fillStyle = brushColor;
+    ctx.beginPath();
+    ctx.arc(startPoint.x, startPoint.y, brushSize, 0, 2 * Math.PI);
+    ctx.fill();
+  }
 
   return (
     <>
-      <TopPanel />
+      <TopPanel clear={clearCanvas} download={download} />
       <canvas
         ref={canvasRef}
+        onMouseDown={onMouseDown}
         className="bg-slate-200"
         width={window.innerWidth}
         height={window.innerHeight}
       />
       <BottomPanel
-        selectedColor={selectedColor}
-        setSelectedColor={setSelectedColor}
+        brushColor={brushColor}
+        brushSize={brushSize}
+        setBrushColor={setBrushColor}
+        setBrushSize={setBrushSize}
         colorInputRef={colorInputRef}
       />
     </>

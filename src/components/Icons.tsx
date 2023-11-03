@@ -22,37 +22,4 @@ Icon.eraser = () => {
   );
 };
 
-Icon.undo = () => {
-  return (
-    <div
-      id="icon-undo"
-      className="flex items-center justify-center w-8 h-8 rounded-sm hover:bg-blue-300"
-    >
-      u
-    </div>
-  );
-};
-
-Icon.redo = () => {
-  return (
-    <div
-      id="icon-redo"
-      className="flex items-center justify-center w-8 h-8 rounded-sm hover:bg-blue-300"
-    >
-      r
-    </div>
-  );
-};
-
-Icon.download = () => {
-  return (
-    <div
-      id="icon-download"
-      className="flex items-center justify-center w-8 h-8 rounded-sm hover:bg-blue-300"
-    >
-      d
-    </div>
-  );
-};
-
 export default Icon;

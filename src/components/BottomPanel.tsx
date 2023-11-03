@@ -2,14 +2,18 @@ import { Dispatch, RefObject, SetStateAction } from "react";
 import Icon from "./Icons";
 
 type props = {
-  selectedColor: string;
-  setSelectedColor: Dispatch<SetStateAction<string>>;
+  brushColor: string;
+  brushSize: number;
+  setBrushColor: Dispatch<SetStateAction<string>>;
+  setBrushSize: Dispatch<SetStateAction<number>>;
   colorInputRef: RefObject<HTMLInputElement>;
 };
 
 const BottomPanel = ({
-  selectedColor,
-  setSelectedColor,
+  brushColor,
+  brushSize,
+  setBrushColor,
+  setBrushSize,
   colorInputRef,
 }: props) => {
   return (
@@ -23,21 +27,26 @@ const BottomPanel = ({
           >
             <div
               className="w-16 h-16 rounded-full"
-              style={{ backgroundColor: selectedColor }}
+              style={{ backgroundColor: brushColor }}
               onClick={() => colorInputRef.current?.click()}
             >
               <input
                 type="color"
                 ref={colorInputRef}
-                value={selectedColor}
-                onChange={(e) => setSelectedColor(e.target.value)}
+                value={brushColor}
+                onChange={(e) => setBrushColor(e.target.value)}
                 className="invisible"
               />
             </div>
           </div>
           <div id="inner-row" className="flex items-center gap-3">
             <Icon.brush />
-            <input type="range" className="mt-1" />
+            <input
+              type="range"
+              value={brushSize}
+              onChange={(e) => setBrushSize(+e.target.value)}
+              className="mt-1"
+            />
           </div>
         </div>
       </div>

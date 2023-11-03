@@ -1,14 +1,29 @@
-import Icon from "./Icons";
+type TopPanelProps = {
+  clear: () => void;
+  download: () => void;
+};
 
-const TopPanel = () => {
+const iconClass =
+  "flex items-center justify-center h-8 rounded-sm min-w-8 hover:bg-blue-300";
+
+const TopPanel = ({ clear, download }: TopPanelProps) => {
   return (
     <div
       id="top-panel"
       className="absolute top-0 right-0 flex gap-2 px-2 py-2 m-2 rounded-md bg-slate-100 drop-shadow-lg bg-"
     >
-      <Icon.undo />
-      <Icon.redo />
-      <Icon.download />
+      <div id="undo" onClick={clear} className={iconClass}>
+        undo
+      </div>
+      <div id="undo" onClick={clear} className={iconClass}>
+        redo
+      </div>
+      <div id="clear" onClick={clear} className={iconClass}>
+        clear
+      </div>
+      <div id="download" onClick={download} className={iconClass}>
+        download
+      </div>
     </div>
   );
 };
