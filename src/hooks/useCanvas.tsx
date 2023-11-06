@@ -1,18 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import TopPanel from "./components/TopPanel";
-import BottomPanel from "./components/BottomPanel";
-
-import "./App.css";
-
-function App() {
-  const [brushColor, setBrushColor] = useState("#000");
+export const useCanvas = () => {
+  const [brushColor, setBrushColor] = useState("#000000");
   const [brushSize, setBrushSize] = useState(5);
-  // const [history, setHistory] = useState<ImageData[]>([])
-  const [pointer, setPointer] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // const color = useRef("#000");
+  // const size = useRef(5);
   const drawHistory = useRef<ImageData[]>([]);
-  // const historyPointer = useRef(0);
+  const historyPointer = useRef(0);
   const shouldDraw = useRef(false);
 
   const history = (command: "undo" | "redo") => {
@@ -20,16 +15,12 @@ function App() {
     const ctx = canvas?.getContext("2d");
 
     const history = drawHistory.current;
-    // let pointer = historyPointer.current;
+    let pointer = historyPointer.current;
 
-    if (command === "undo" && pointer > 0) setPointer((p) => p - 1);
-    if (command === "redo" && pointer < history.length - 1)
-      setPointer((p) => p + 1);
+    if (command === "undo" && pointer > 0) pointer -= 1;
+    if (command === "redo" && pointer < history.length - 1) pointer += 1;
     const imageData = history[pointer];
     ctx?.putImageData(imageData, 0, 0);
-
-    console.log({ history });
-    console.log({ pointer });
     console.log({ imageData });
   };
 
@@ -45,8 +36,17 @@ function App() {
 
   const download = () => {
     const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
 
-    const URL = canvas?.toDataURL();
+    if (canvas && ctx) {
+      // Add behind elements.
+      ctx.globalCompositeOperation = "destination-over";
+      // Add Background
+      ctx.fillStyle = "rgb(226 232 240 / 1)";
+      ctx?.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    const URL = canvasRef.current?.toDataURL();
     const anchor = document.createElement("a");
     anchor.href = URL!;
     anchor.download = "sketch.png";
@@ -62,22 +62,14 @@ function App() {
       ctx.strokeStyle = brushColor;
       ctx.lineWidth = brushSize;
     }
+
+    console.log(brushColor, brushSize);
   }, [brushColor, brushSize]);
 
   useLayoutEffect(() => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-
-    if (canvas && ctx) {
-      // Add elements in behind
-      ctx.globalCompositeOperation = "destination-over";
-      // Add Background
-      ctx.fillStyle = "rgb(226 232 240 / 1)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      // Add elements in front
-      ctx.globalCompositeOperation = "source-over";
-    }
 
     const beginPath = (x: number, y: number) => {
       ctx?.beginPath();
@@ -108,8 +100,7 @@ function App() {
 
       const imageData = ctx?.getImageData(0, 0, canvas?.width, canvas?.height);
       drawHistory.current.push(imageData!);
-      // historyPointer.current = drawHistory.current.length - 1;
-      setPointer(drawHistory.current.length - 1);
+      historyPointer.current = drawHistory.current.length - 1;
     };
 
     canvas.addEventListener("mousedown", handleMouseDown);
@@ -132,23 +123,14 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <>
-      <TopPanel history={history} clear={clearCanvas} download={download} />
-      <canvas
-        ref={canvasRef}
-        width={window.innerWidth}
-        height={window.innerHeight}
-        className="bg-slate-200"
-      />
-      <BottomPanel
-        color={brushColor}
-        setColor={setBrushColor}
-        size={brushSize}
-        setSize={setBrushSize}
-      />
-    </>
-  );
-}
-
-export default App;
+  return {
+    canvasRef,
+    brushColor,
+    setBrushColor,
+    brushSize,
+    setBrushSize,
+    history,
+    clearCanvas,
+    download,
+  };
+};
