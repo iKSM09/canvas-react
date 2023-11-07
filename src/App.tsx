@@ -41,6 +41,14 @@ function App() {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Add elements in behind
+    ctx.globalCompositeOperation = "destination-over";
+    // Add Background
+    ctx.fillStyle = "rgb(226 232 240 / 1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Add elements in front
+    ctx.globalCompositeOperation = "source-over";
   };
 
   const download = () => {
@@ -56,7 +64,7 @@ function App() {
   useEffect(() => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
     if (ctx) {
       ctx.strokeStyle = brushColor;
