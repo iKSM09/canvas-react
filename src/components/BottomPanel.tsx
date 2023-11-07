@@ -1,3 +1,4 @@
+import { Brush, Eraser } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 type PropsType = {
@@ -28,7 +29,7 @@ const BottomPanel = ({ color, setColor, size, setSize }: PropsType) => {
     <div id="bottom-panel" className="absolute bottom-0 left-0 m-2">
       <div id="col" className="flex flex-col items-start gap-3 ">
         <button
-          id="icon-eraser"
+          title="eraser"
           onClick={() => setIsErase(true)}
           className={buttonClass}
           style={{
@@ -38,7 +39,7 @@ const BottomPanel = ({ color, setColor, size, setSize }: PropsType) => {
             color: `${isErase ? "rgb(241 245 249 / 1)" : ""}`,
           }}
         >
-          e
+          <Eraser />
         </button>
         <div id="row" className="flex items-end gap-3">
           <div
@@ -60,7 +61,7 @@ const BottomPanel = ({ color, setColor, size, setSize }: PropsType) => {
           </div>
           <div id="inner-row" className="flex items-center gap-3">
             <button
-              id="icon-eraser"
+              title="brush"
               onClick={() => setIsErase(false)}
               className={buttonClass}
               style={{
@@ -70,7 +71,7 @@ const BottomPanel = ({ color, setColor, size, setSize }: PropsType) => {
                 color: `${isErase ? "" : "rgb(241 245 249 / 1)"}`,
               }}
             >
-              b
+              <Brush />
             </button>
             <input
               type="range"
